@@ -37,7 +37,6 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-
 // const newUser = new user({
 //     name:"rihan",
 //     password:"qwe"
