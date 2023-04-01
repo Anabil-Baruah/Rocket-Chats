@@ -107,6 +107,5 @@ Thank you for reading!
 
 ![Auth Page](https://res.cloudinary.com/dudvqptv0/image/upload/v1680357948/Project%20previews/Rocket-chats/rocket-chat-screen-shot_su2qdw.png)
 
-
 ![Home page](https://res.cloudinary.com/dudvqptv0/image/upload/v1680357780/Project%20previews/Rocket-chats/2023-04-01_4_as3v4g.png)
 
