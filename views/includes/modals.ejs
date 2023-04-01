@@ -1,0 +1,345 @@
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">My profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-6 mx-auto my-auto text-center">
+                            <form id="editProfilePic">
+                                <label class="text-center">
+                                    <img src="<%= user.profilePic%>" alt=""
+                                        class="rounded-circle w-50 h-50 img-fluid img-overflow profilePic">
+                                    <h2 class="container"
+                                        style="margin: -35px 0px 0px 25px; z-index: 2; font-size:23px;">
+                                        <i class="fa-solid fa-pencil text-success bg-light rounded-circle"></i>
+                                    </h2>
+                                    <input type="file" accept="image/*" id="profilePicInput" style="display:none ;">
+                                </label>
+                            </form>
+                            <h3>
+                                <%= locals.user.username%>
+                            </h3>
+                            <!-- Your centered element here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="container row my-2 text-center">
+                    <div class="container my-2"><strong>Bio: </strong> Nice life good life be king </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const coverPicInput = document.getElementById('profilePicInput');
+    coverPicInput.addEventListener('change', async (event) => {
+        event.preventDefault()
+
+
+        const fileInput = document.querySelector('#profilePicInput')
+        const file = fileInput.files[0];
+
+        const formData = new FormData();
+
+        var base64String = ""
+        if (file !== undefined) {
+
+            const reader = new FileReader();
+            reader.readAsBinaryString(file);
+            base64String = await new Promise((resolve) => {
+                reader.addEventListener('load', () => {
+                    resolve(btoa(reader.result));
+                });
+            });
+
+            formData.append('base64String', base64String)
+            formData.append('fileType', file.type)
+        }
+        const formValues = Object.fromEntries(formData.entries());
+        console.log(formValues)
+
+        $.ajax({
+            url: `${baseURL}/groups/updateProfile`,
+            method: 'POST',
+            data: JSON.stringify(formValues),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.status !== "error")
+                    document.querySelector('.profilePic').src = response.url
+                //location.reload()
+            },
+            error: function (error) {
+                alert("Sorry some error occured please try again later")
+                location.reload()
+            }
+        });
+    })
+
+</script>
+
+
+<div class="modal fade" id="createGroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="createGroupLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createGroupLabel">Create group</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="this.createGrp(event);" id="createGrpForm">
+                    <label for="profileImage" class="text-center">
+                        <img src="/img/anonymous-avatar-icon-25.png" alt="" style="z-index: 2;"
+                            class="rounded-circle w-25 h-25 img-fluid img-overflow">
+                        <h2 class="container" style="margin: -35px 0px 0px 25px;">
+                            <i class="fa-solid fa-circle-plus text-light bg-dark rounded-circle"></i>
+                        </h2>
+                        <div for="profileImage" class="form-text text-dark" style="z-index: 2;">Choose an image</div>
+                    </label>
+                    <input type="file" id="profileImage" name="profilePhoto" class="d-none" required>
+                    <div class="mb-3">
+                        <label for="exampleGrpName" class="form-label">Group Name</label>
+                        <input type="text" class="form-control" name="name" id="exampleGrpName" required
+                            aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Description</label>
+                        <input type="text" class="form-control" name="description" id="description">
+                    </div>
+                    <input type="hidden" name="user_id" value="<%= locals.user._id%>">
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-outline-success" id="createGrpBtn">Create</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal in small devices to dispaly users and groups -->
+<div class="modal fade d-sm-none" id="userModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="userModalLabel"></h5>
+                <form class="d-flex mx-1 p-3">
+                    <input class="form-control me-2" id="searchBar2" type="search" placeholder="Search"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary p-1" type="submit"><i
+                            class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <main class="chat-main">
+                    <div class="usersModal">
+                        <h3><i class="fas fa-comments m-2"></i> GROUPS:</h3>
+                        <!-- <h2 id="room-name"></h2> -->
+                        <ul class="groups" id="displayGroups">
+                            <%= (groups.length===0) ? "No groups found" : null %>
+                                <% groups.forEach((group)=>{ %>
+                                    <li class="group mx-2 my-2 p-2 chatsSm" data-bs-dismiss="modal"
+                                        onclick="groupSelect(this)" group-id="<%= group._id%>"
+                                        group-name="<%= group.groupName%>">
+                                        <img src=<%=group.profilePhoto%> alt="">
+                                        <div class="userContent">
+                                            <b class="dispaly-1">
+                                                <%= group.groupName %>
+                                            </b> <br>
+                                            Hi mjas
+                                        </div>
+                                    </li>
+                                    <%})%>
+                        </ul>
+                        <hr>
+                        <h3><i class="fas fa-users m-2"></i> USERS:</h3>
+                        <ul id="users">
+                            <% friends.forEach((friend)=>{ %>
+                                <li class="user mx-2 my-2 p-2 chatsSm" data-bs-dismiss="modal"
+                                    onclick="userSelect(this)" user-id=<%=friend._id%> user-name=<%=friend.username%>>
+                                        <img src="/img/anonymous-avatar-icon-25.png" alt="">
+                                        <div class="userContent"><b class="dispaly-1">
+                                                <%= friend.username%> <br>
+                                            </b> Hi man how r u</div>
+                                </li>
+                                <%})%>
+
+                        </ul>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--group settings modal -->
+<div class="modal fade" id="groupSetting" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="groupSettingLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="groupSettingLabel"><i class="fas fa-comments m-2"></i> Groups Settings</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="dispalyMyGrps">
+                    <h6>Select a group</h6>
+                    <!-- <h2 id="room-name"></h2> -->
+                    <ul class="groups mx-2 " style="padding-left: 0;">
+                        <%= (myGroups.length===0) ? "No groups found" : null %>
+                            <% myGroups.forEach((group)=>{ %>
+                               <a class="text-dark" style="text-decoration: none;" href="<%baseURL%>/groups/settings/<%=group._id%>"><li class="group mx-2 my-2 p-2"  data-bs-dismiss="modal"> 
+                                    <img src=<%=group.profilePhoto%> alt="">
+                                    <div class="userContent">
+                                        <b class="dispaly-1">
+                                            <%= group.groupName %>
+                                        </b> <br>
+                                        <div class="truncate">
+                                        <%= group.description %>
+                                    </div>
+                                    </div>
+                                </li></a>
+                                <%})%>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+</div>
+
+
+<script>
+    const createGroup = document.querySelector('#createGrpForm')
+
+    createGroup.createGrp = async function (self) {
+        event.preventDefault()
+        const formData = new FormData(this)
+        const show_alert = document.getElementById('show-alert-chats')
+        const createGrpBtn = document.querySelector('#createGrpBtn')
+
+        createGrpBtn.innerHTML = `<div class="loader"></div>`
+        //self.querySelector('button').setAttribute('disabled', true)
+
+        //convert the file to base64 to transfer
+        var base64 = ""
+        const fileInput = document.querySelector('#profileImage')
+        const file = fileInput.files[0];
+
+        const reader = new FileReader();
+        reader.readAsBinaryString(file);
+        base64 = await new Promise((resolve) => {
+            reader.addEventListener('load', () => {
+                resolve(btoa(reader.result));
+            });
+        });
+        console.log(base64)
+        formData.append('base64', base64)
+        formData.append('fileType', file.type)
+
+
+        const formValues = Object.fromEntries(formData.entries());
+        console.log(formValues)
+
+        $.ajax({
+            url: `${baseURL}/groups/createGroup`,
+            method: 'POST',
+            data: JSON.stringify(formValues),
+            contentType: 'application/json',
+            success: function (response) {
+                createGrpBtn.innerHTML = `Created <i class="fa-solid fa-badge-check"></i>`
+                $('#createGroup button[data-bs-dismiss="modal"]').click();
+                var symbol, color
+                if (response.status === "success") {
+                    symbol = "check-circle-fill"
+                    color = "success"
+                } else {
+                    symbol = "exclamation-triangle-fill"
+                    color = "danger"
+                }
+
+                show_alert.innerHTML = `<div class="alert alert-${color} d-flex align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#${symbol}"/></svg>
+                    <div>
+                     ${response.message}
+                    </div>
+                  </div>`
+
+            },
+            error: function (error) {
+                alert("Sorry some error occured please try again later")
+            }
+        })
+        setTimeout(() => { show_alert.innerHTML = ""; location.reload() }, 7000);
+    }
+
+    $('#searchBar2').on('input', function () {
+        var query = $(this).val();
+
+        console.log(query)
+        $.ajax({
+            url: `${baseURL}/search`,
+            method: 'POST',
+            data: { query: $(this).val() },
+            success: function (response) {
+                // Display the results on the page
+
+                var html = ''
+                response.groups.forEach((group) => {
+                    html += ` <li class="group mx-2 my-2 p-2" data-bs-dismiss="modal"
+             onclick="groupSelect(this)" group-id="${group._id}"
+             group-name=${group.groupName}">
+             <img src=${group.profilePhoto} alt="">
+             <div class="userContent">
+                 <b class="dispaly-1">
+                     ${group.groupName}
+                 </b> <br>
+                 Hi mjas
+             </div>
+         </li>`
+                })
+                query === "" || html == "" ? html = `<a class="dropdown-item p-2 m-1 " style="width: 300px;" href="#">No results found</a>` : null
+                document.querySelector('#displayGroups').innerHTML = html
+
+                html = ""
+                response.users.forEach((user) => {
+                    html += `  <li class="user mx-2 my-2 p-2" data-bs-dismiss="modal" onclick="userSelect(this)"
+                user-id=${user._id} user-name=${user.username}>
+                    <img src="/img/anonymous-avatar-icon-25.png" alt="">
+                    <div class="userContent"><b class="dispaly-1">
+                            ${user.username} <br>
+                        </b> Hi man how r u</div>
+            </li>`
+                })
+                query === "" || html == "" ? html = `<a class="dropdown-item p-2 m-1 " style="width: 300px;" href="#">No results found</a>` : null  //checks if the input is null or empty
+                document.querySelector('#users').innerHTML = html
+
+
+
+            },
+            error: function (error) {
+
+            }
+        });
+
+
+    });
+</script>
+
+
+<!-- action="<%= locals.baseURL%>/createGroup" -->

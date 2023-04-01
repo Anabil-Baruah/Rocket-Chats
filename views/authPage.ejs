@@ -1,0 +1,263 @@
+<%- include('includes/header')%>
+    <%- include('includes/alerts')%>
+
+        <body>
+            <div class="container " id="show-alert"></div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-sm-6  mx-0 " id="authImgContainer">
+                        <div class="container d-none d-sm-block authImage">
+                            <img id="authImage" src="img/login.jpg" alt="">
+                            <h2 class="text-dark d-flex " id="header">
+                                <div class="px-2"
+                                    style="transform: rotate(45deg); font-family: 'Orbitron', sans-serif;"><i
+                                        class="fa-brands fa-rocketchat fa-rotate-270"></i></div> ROCKET CHATS
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <div class="join-container">
+                            <!-- <h2 class="text-dark" id="header">Rocket chats <i class="fa-brands fa-rocketchat fa-rotate-270"></i></h2> -->
+                            <h4 class="text-dark d-flex d-sm-none" id="header">
+                                <div class="px-2" style="transform: rotate(45deg); "><i
+                                        class="fa-brands fa-rocketchat fa-rotate-270"></i></div> ROCKET CHATS
+                            </h4>
+                            <header class="join-header">
+                                <h1 class="headerTitle"> Sign In </h1>
+                            </header>
+                            <main class="join-main">
+                                <div class="signIn">
+                                    <form onsubmit="submitLogin(event)" id="loginForm">
+                                        <label for="username">Username</label>
+                                        <div class="form-control">
+                                            <input type="email" name="email" id="username" placeholder="Enter email..."
+                                                required />
+                                        </div>
+                                        <label for="password">password</label>
+                                        <div class="form-control">
+                                            <input type="password" name="password" id="password"
+                                                placeholder="Enter Password" required />
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                        <div class="container d-flex justify-content-center text-center m-auto">
+                                            <button class="btn p-0 btn-light text-dark btn-block " style="width: 170px;"
+                                                id="signin-button">
+                                                <div class="row py-0">
+                                                    <div class="col-2 px-2 ">
+                                                        <h5> <img width="40rem" width="40rem" src="img/google-logo.png"
+                                                                alt="">
+                                                        </h5>
+                                                    </div>
+                                                    <div class="col-10">
+                                                        <h5 class="my-0" style="font-size: 14px;padding-top:12px;">Sign
+                                                            In
+                                                            with Google</h5>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                    <div class="container text-center my-2">
+                                        <a href="#signUp" onclick="toggleAuth(this)">Sign Up</a>
+                                    </div>
+                                </div>
+
+                                <div class="signUp" style="display:none;">
+                                    <form onsubmit="submitSignUp(event)" id="signUpForm">
+                                        <label class="text-center">
+                                            <img src="/img/anonymous-avatar-icon-25.png" alt="" style="z-index: 2;"
+                                                class="rounded-circle w-25 h-25 img-fluid img-overflow">
+                                            <h2 class="container" style="margin: -35px 0px 0px 25px;">
+                                                <i
+                                                    class="fa-solid fa-circle-plus text-light bg-dark rounded-circle"></i>
+                                            </h2>
+                                            <div id="emailHelp" class="form-text text-light" style="z-index: 2;">Choose
+                                                an
+                                                image
+                                            </div>
+                                            <input type="file" name="profilePic" class="d-none" id="profilePicInput">
+                                        </label>
+                                        <label>Username</label>
+                                        <div class="form-control">
+                                            <input type="text" name="username" id="username"
+                                                placeholder="Enter username..." required />
+                                        </div>
+                                        <label for="email">Email</label>
+                                        <div class="form-control">
+                                            <input type="text" name="email" id="email" placeholder="Enter email..."
+                                                required />
+                                        </div>
+                                        <label for="password">password</label>
+                                        <div class="form-control">
+                                            <input type="password" name="password" id="password"
+                                                placeholder="Enter Password" required />
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Create Account</button>
+                                    </form>
+                                    <div class="container text-center my-2">
+                                        <button class="btn p-0 btn-light btn-block " style="width: 170px;"
+                                            id="signup-button">
+                                            <div class="row py-0">
+                                                <div class="col-2 px-2">
+                                                    <h5> <img width="40rem" width="40rem" src="img/google-logo.png"
+                                                            alt="">
+                                                    </h5>
+                                                </div>
+                                                <div class="col-10">
+                                                    <h6 class="my-0" style="font-size: 14px; padding-top:12px;">Sign Up
+                                                        with
+                                                        Google
+                                                    </h6>
+                                                </div>
+                                            </div>
+                                        </button>
+                                        <br>
+                                        <a href="#login" onclick="toggleAuth(this)">Login</a>
+                                    </div>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+
+
+        <script>
+            function toggleAuth(self) {
+
+                const form = self.innerText;
+                if (form == "Sign Up") {
+                    document.querySelector('.signIn').style.display = "none"
+                    document.querySelector('.headerTitle').innerText = "Sign Up"
+                    document.querySelector('.signUp').style.display = ""
+                    document.querySelector('#authImage').setAttribute('src', 'img/signUp.jpg')
+                    document.querySelector('#header').style.margin = " -60px 0px 0px 40px"
+                } else {
+                    document.querySelector('.signIn').style.display = ""
+                    document.querySelector('.headerTitle').innerText = "Sign In"
+                    document.querySelector('.signUp').style.display = "none"
+                    document.querySelector('#authImage').setAttribute('src', 'img/login.jpg')
+                    document.querySelector('#header').style.margin = " -110px 0px 0px 40px"
+                }
+            }
+
+            const signInButton = document.getElementById('signin-button');
+            signInButton.addEventListener('click', () => {
+                // Redirect the user to the Google OAuth2 authorization page
+                window.location.href = `${baseURL}/login/auth/google`;
+            });
+            const signUpButton = document.getElementById('signup-button');
+            signUpButton.addEventListener('click', () => {
+                // Redirect the user to the Google OAuth2 authorization page
+                window.location.href = `${baseURL}/signUp/auth/google`;
+            });
+
+
+            function submitLogin(event) {
+                event.preventDefault()
+                const form = document.getElementById('loginForm');
+                const formData = new FormData(form);
+                const formValues = Object.fromEntries(formData.entries());
+                console.log(formValues);
+                const alert = document.getElementById('show-alert')
+
+                $.ajax({
+                    url: `${baseURL}/login`,
+                    method: 'POST',
+                    data: JSON.stringify(formValues),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        if (response.status == "error") {
+
+                            alert.innerHTML = ` <div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                            <div>
+                              ${response.message}
+                            </div>
+                          </div>`
+
+                        }
+                        else
+                            location.reload()
+
+                    },
+                    error: function (error) {
+                        alert.innerHTML = `<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+                        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                        <div>
+                          Sorry some error occured
+                        </div>
+                      </div>`
+                    }
+                })
+                setTimeout(() => { alert.innerHTML = "" }, 4000)
+            }
+
+            async function submitSignUp(event) {
+                event.preventDefault()
+                const form = document.getElementById('signUpForm');
+                const formData = new FormData(form);
+
+                const alert = document.getElementById('show-alert')
+
+                const fileInput = document.querySelector('#profilePicInput')
+                const file = fileInput.files[0];
+                var base64String = ""
+                if (file !== undefined) {
+
+                    const reader = new FileReader();
+                    reader.readAsBinaryString(file);
+                    base64String = await new Promise((resolve) => {
+                        reader.addEventListener('load', () => {
+                            resolve(btoa(reader.result));
+                        });
+                    });
+
+                    formData.append('base64String', base64String)
+                    formData.append('fileType', file.type)
+
+                    const formValues = Object.fromEntries(formData.entries());
+                    console.log(formValues);
+
+
+                    $.ajax({
+                        url: `${baseURL}/signUp`,
+                        method: 'POST',
+                        data: JSON.stringify(formValues),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            console.log(response)
+                            if (response.status == "error") {
+    
+                                alert.innerHTML = ` <div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                <div>
+                                  ${response.message}
+                                </div>
+                              </div>`
+    
+                            }
+                            else
+                                location.reload()
+    
+                        },
+                        error: function (error) {
+                            alert.innerHTML = `<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert">
+                            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                            <div>
+                              Sorry some error occured
+                            </div>
+                          </div>`
+                        }
+                    })
+                }
+            }
+        </script>
+
+
+        <%- include('includes/footer')%>

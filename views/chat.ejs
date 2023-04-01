@@ -1,0 +1,176 @@
+<%- include('includes/header')%>
+  <%- include('includes/modals', {user:user, baseURL:baseURL, groups, friends, myGroups})%>
+    <%- include('includes/alerts')%>
+
+      <body>
+        <div class="container" id="show-alert-chats"></div>
+        <div class="chat-container">
+          <header class="chat-header">
+            <h1><i class="fa-brands fa-rocketchat fa-rotate-270"></i> Rocket Chats</h1>
+            <!-- <a href="/logout" class="btn btn-danger">Leave Room</a> -->
+            <div class="d-flex">
+              <div class="d-none d-sm-block d-md-block">
+
+                <form class="d-flex mx-2">
+                  <input class="form-control me-2 dropdown-toggle" id="searchBar" data-bs-toggle="dropdown"
+                    aria-expanded="false" type="search" placeholder="Search" aria-label="Search">
+                  <ul class="dropdown-menu" id="dropDownSearch">
+                    <a class="dropdown-item p-2 m-1 " style="width: 300px;" href="#">Search for users</a>
+                  </ul>
+                  <button class="btn btn-outline-dark" id="buttonSearchItem" type="disable"><i
+                      class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+
+              </div>
+              <div class="d-flex d-sm-none mx-2 my-1">
+                <h3 data-bs-toggle="modal" data-bs-target="#userModal"><i class="fa-solid fa-messages"></i>
+                </h3>
+              </div>
+              <div class="btn-group">
+                <h4 data-bs-toggle="dropdown" aria-expanded="false"><i
+                    class="fa-solid fa-user-gear dropdown-toggle dropdown-toggle-split mx-1 my-2 text-bold dispaly-2"></i>
+                </h4>
+                <span class="visually-hidden">Toggle Dropdown</span>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#staticBackdrop">My Profile</a>
+                  </li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#createGroup">Create Group</a>
+                  </li>
+                  <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#groupSetting">Group Settings</a>
+                  </li>
+                  <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul>
+              </div>
+
+            </div>
+
+          </header>
+          <main class="chat-main">
+            <div class="chat-sidebar">
+              <h3><i class="fas fa-comments"></i> Groups:</h3>
+              <!-- <h2 id="room-name"></h2> -->
+              <ul class="users" style="padding-left: 0;">
+                <%= (groups.length===0) ? "No groups found" : null %>
+                  <% groups.forEach((group)=>{ %>
+                    <li class="group chats" onclick="groupSelect(this)" group-id="<%= group._id%>"
+                      group-name="<%= group.groupName%>"><img src=<%=group.profilePhoto%> alt="">
+                      <div class="userContent"><b>
+                          <%= group.groupName%>
+                        </b>Hi mjas</div>
+                    </li>
+                    <%})%>
+              </ul>
+              <hr>
+              <h3><i class="fas fa-users"></i> Users</h3>
+              <ul id="users" style="padding-left: 0;">
+                <%= (friends.length===0) ? "No users found" : null %>
+                  <% friends.forEach((friend)=>{ %>
+                    <li class="user chats" onclick="userSelect(this)" user-id=<%=friend._id%> user-name=<%=friend.username%>
+                        ><img src="<%= friend.profilePic%>" alt="">
+                        <div class="userContent"><b>
+                            <%= friend.username%>
+                          </b> Hi man how r u</div>
+                    </li>
+                    <%})%>
+
+              </ul>
+            </div>
+            <div class="col">
+              <div class="chat-messages">
+
+
+                <div class="alert alert-primary d-flex align-items-center" role="alert">
+                  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                    <use xlink:href="#check-circle-fill" />
+                  </svg>
+                  <div>
+                    <strong>Welcome to Rocket chats. </strong> Select a user or a group to continue
+                  </div>
+                </div>
+                <div class="container dispaly-img">
+                  <img src="/img/4636942.jpg" alt="">
+                </div>
+
+              </div>
+              <div class="d-flex justify-content-center" id="join-group">
+              
+            </div>
+            </div>
+          </main>
+          <div class="chat-form-container">
+            <form id="chat-form" onsubmit="this.sendMsg(event)" enctype="multipart/form-data">
+              <input id="msg" type="text" placeholder="Enter Message" required autocomplete="off" name="message" />
+              <label for="file-input">
+                <span class="pin-icon"><i class="fa-solid fa-paperclip"></i></span>
+              </label>
+              <input type="file" id="file-input" name="file" style="display:none;">
+              <input type="hidden" name="userId" id="userId" value="">
+              <input type="hidden" name="userName" id="userName" value="">
+              <input type="hidden" name="groupId" id="groupId" value="">
+              <input type="hidden" name="groupName" id="groupName" value="">
+              <button class="btn btn-primary mx-2 row" id="submitMsg" type="submit" disabled><i
+                  class="fas fa-paper-plane p-0"></i></button>
+            </form>
+          </div>
+        </div>
+        <input type="hidden" id="ownerId" owner-name="<%= user.username%>" value="<%=user._id%>">
+
+      </body>
+
+      <!-- Button trigger modal -->
+      <script>
+
+        
+
+        $('#searchBar').on('input', function () {
+          var query = $(this).val();
+
+          $.ajax({
+            url: `${baseURL}/search`,
+            method: 'POST',
+            data: { query: $(this).val() },
+            success: function (response) {
+              // Display the results on the page
+              var html = ''
+              response.groups.forEach((group) => {
+                html += `<a onclick="groupSelect(this)" class="dropdown-item p-2 m-1 d-flex" group-id=${group._id} style="width: 300px;" href="#">
+                <img src="${group.profilePhoto}" class="rounded-circle img-fluid img-overflow profilePic" alt="">
+                <div class="userContent mx-2">
+                  <b class="dispaly-1" >
+                    ${group.groupName}
+                  </b> 
+              </div>
+              </a>`
+              })
+              response.users.forEach((user) => {
+                html += `<a onclick="userSelect(this)" class="dropdown-item p-2 m-1 d-flex" style="width: 300px;" user-id=${user._id} href="#">
+                <img src="${user.profilePic}" class="rounded-circle img-fluid img-overflow profilePic" alt="">
+                <div class="userContent mx-2">
+                  <b class="dispaly-1" >
+                    ${user.username}
+                  </b> 
+              </div>
+              </a>`
+              })
+              query === "" || html == "" ? html = `<a class="dropdown-item p-2 m-1 " style="width: 300px;" href="#">No results found</a>` : null  //checks if the input is null or empty
+
+              document.getElementById('dropDownSearch').innerHTML = html
+
+              // ... code to display results ...
+            }
+          });
+
+
+        });
+
+
+        var button1 = document.querySelector('#buttonSearchItem');
+        button1.addEventListener('click', function (event) {
+          // Prevent the event from bubbling up to the dropdown container
+          event.stopPropagation();
+        });
+
+
+      </script>
+
+      <%- include('includes/footer')%>

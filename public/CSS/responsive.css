@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+:root {
+    --dark-color-a: #667aff;
+    --dark-color-b: #7386ff;
+    --light-color: #e6e9ff;
+    --dark-color-c: #cdd3fc;
+    --dark-color-d: #f6f6f6;
+    --success-color: #5cb85c;
+    --error-color: #d9534f;
+}
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#usersModal {
+    background-color: var(--dark-color-a);
+}
+
+.chat-main .usersModal ul li {
+    background-color: var(--dark-color-d);
+    width: 18rem;
+    display: flex;
+    flex-direction: row;
+    pointer-events: auto;
+}
+
+.chat-main .usersModal ul li:hover {
+    cursor: pointer;
+}
+
+.usersModal li img {
+    width: 3rem;
+    height: 3rem;
+    margin: 5px 19px 8px 6px;
+    border-radius: 50%;
+}
+@media only screen and (max-width: 800px) {
+    #authImgContainer{
+        display: none;
+    }
+}
+@media only screen and (max-width: 700px) {
+    .chat-messages {
+        padding: 30px;
+        max-height: 500px;
+        overflow-y: scroll;
+        width: 100%;
+    }
+
+    .chat-messages .message-sender {
+        width: 100%;
+    }
+
+    .chat-main .usersModal ul li {
+        width: 21rem;
+    }
+
+}
+
+@media only screen and (max-width: 400px) {
+    .chat-messages {
+        padding: 30px;
+        max-height: 500px;
+        overflow-y: scroll;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+    }
+
+    .chat-main .usersModal ul li {
+        width: 17rem;
+        overflow: hidden;
+    }
+
+    .chat-messages .message-sender {
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+
+    .chat-header h1 {
+        font-size: large;
+    }
+}
