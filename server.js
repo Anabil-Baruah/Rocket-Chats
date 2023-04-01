@@ -31,6 +31,7 @@ db.once('open', function () {
     console.log('Connected to MongoDB');
 });
 
+
 app.use(session({
     secret: 'mysecret',
     resave: false,
