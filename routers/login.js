@@ -9,8 +9,8 @@ require('cookie-parser');
 const { OAuth2Client } = require('google-auth-library');
 
 
-const CLIENT_ID = process.env.CLIENT_ID.toString()
-const CLIENT_SECRET = process.env.CLIENT_SECRET.toString()
+const CLIENT_ID = process.env.CLIENT_ID
+const CLIENT_SECRET = process.env.CLIENT_SECRET
 const REDIRECT_URI = `${baseURL}/login/auth/google/callback`;
 
 
