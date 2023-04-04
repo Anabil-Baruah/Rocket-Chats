@@ -165,7 +165,7 @@ router.route('/settings/:_id')
                     _id: 1,
                     username: 1,
                     profilePic: 1,
-                    bio:1
+                    bio: 1
                 }
             }
         ]);
@@ -183,27 +183,64 @@ router.route('/removeMember')
         if (userFound === null) {
             res.json({ status: "error", message: "User has been logged out" })
         }
-        const grpUpdate = await group.updateOne({_id:req.body.groupId}, {
-            $pull:{
-                members:{
-                    _id:req.body._id
+        const grpUpdate = await group.updateOne({ _id: req.body.groupId }, {
+            $pull: {
+                members: {
+                    _id: req.body._id
                 }
             }
         })
 
-        const userUpdate = await user.updateOne({_id:req.body.Id}, {
-            $pull:{
-                groups:{
-                    _id:req.body.groupId
+        const userUpdate = await user.updateOne({ _id: req.body.Id }, {
+            $pull: {
+                groups: {
+                    _id: req.body.groupId
                 }
             }
         })
 
-        if(grpUpdate && userUpdate){
-            res.json({status:"success", message:"User has been removed"})
-        }else{
-            res.json({status:"error", message:"Error occured try later"})
+        if (grpUpdate && userUpdate) {
+            res.json({ status: "success", message: "User has been removed" })
+        } else {
+            res.json({ status: "error", message: "Error occured try later" })
         }
         console.log(req.body)
+    })
+
+router.route('/togglePrivateGrp')
+    .post(auth, async (req, res) => {
+        const userFound = await user.findOne({ accessToken: req.accessToken })
+        const groupFound = await group.findById({ _id: req.body._id })
+        var groupUpdate
+
+        console.log(req.body)
+        if (userFound === null) {
+            res.json({
+                status: "error",
+                message: "User has been logged out"
+            })
+        }
+        console.log(groupFound)
+
+        if (groupFound.groupStatus === "Private") {
+            groupUpdate = await group.updateOne({ _id: req.body._id }, {
+                $set: {
+                    groupStatus: "Public"
+                }
+            })
+        } else {
+            groupUpdate = await group.updateOne({ _id: req.body._id }, {
+                $set: {
+                    groupStatus: "Private"
+                }
+            })
+        }
+       
+        if (groupUpdate) {
+            console.log("haga")
+            res.json({
+                status: "success"
+            })
+        }
     })
 module.exports = router

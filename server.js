@@ -76,11 +76,11 @@ io.on('connection', socket => {
 
     socket.on('join', function (data) {
         socket.join(data.ownerId); // We are using room of socket io
-        console.log(data.ownerId)
+        // console.log(data.ownerId)
     });
 
     socket.on('joinRoom', (data) => {
-        console.log(`Client joined room: ${data.ownerId} room ${data.groupId}`);
+        // console.log(`Client joined room: ${data.ownerId} room ${data.groupId}`);
         socket.join(data.groupId);
     });
 
@@ -140,7 +140,7 @@ io.on('connection', socket => {
     })
 
     socket.on('disconnect', () => {
-        console.log(`User ${socket.Id} disconnected`);
+        // console.log(`User ${socket.Id} disconnected`);
     });
 
 });

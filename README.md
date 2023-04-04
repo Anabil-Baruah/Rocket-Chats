@@ -12,7 +12,7 @@ https://chat-sphere-381410.el.r.appspot.com
 ## Features
 
 - Scalable: hosted on Google's App Engine and uses autoscaling to handle increases in traffic
-- Single sign-on (SSO) with the option to sign in and log in with Google.
+- Single sign-on (SSO) with the option to sign up and log in with Google.
 - Users cloudinary APIs for uploading files and images
 - Enabled CI/CD
 - Group creation

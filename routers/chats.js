@@ -210,19 +210,21 @@ router.route('/selectGroup')
         const userFound = await user.findOne({ accessToken: req.accessToken })
         if (userFound === null) return res.render(`authPage`)
 
+       
+
         msg = await messages.find({ conversation_id: _id })
         if (msg) {
             msg = formatDate(msg)       //to format the date
             msg = formatName(msg, userFound._id)
         }
 
-        // conversationFound.sort((a, b) => parseInt(a.createdAt) - parseInt(b.createdAt));
-
-        // console.log(conversationFound);
         const groupFound = await group.findOne({ _id })
         const memberExist = groupFound.members.some(obj => obj._id.toString() === userFound._id.toString())
 
-
-        res.json({ messages: msg, isMember: memberExist })
+        if(groupFound.groupStatus !== "Public" && !memberExist){
+            return res.json({status:"Not joined", message:"This group is private", isMember: memberExist})
+        }
+        
+        res.json({ status:"Joined", messages: msg, isMember: memberExist })
     })
 module.exports = router

@@ -4,6 +4,7 @@ const groupSchema = mongoose.Schema({
     groupName: String,
     profilePhoto:String,
     description:String,
+    groupStatus:{type:String, default:"Public"},
     members: [{
         _id: mongoose.ObjectId,
         username: String

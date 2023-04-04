@@ -1,11 +1,12 @@
-const baseURL = 'http://localhost:8000'
-// const baseURL = "https://chat-sphere-381410.el.r.appspot.com"
+// const baseURL = 'http://localhost:8000'
+const baseURL = "https://chat-sphere-381410.el.r.appspot.com"
 const socket = io(baseURL)
 const owner = document.querySelector('#ownerId').value
 const chatMessages = document.querySelector('.chat-messages');
 const form = document.querySelector('#chat-form');
 const fileInput = document.getElementById('file-input');
 const joinGrp = document.getElementById('join-group')
+var submitButton = document.querySelector("#submitMsg");
 
 // fileInput.addEventListener('change', (event) => {
 //   const file = event.target.files[0];
@@ -143,6 +144,11 @@ function groupSelect(self) {
     success: function (response) {
       var html = ""
       var chatColor = ""
+
+      if(response.status === "Not joined"){
+        document.querySelector('.chat-messages').innerHTML = `<h3 class='text-center'>${response.message}</h3>`
+        submitButton.setAttribute("disabled", true);
+      }else{
       response.messages.forEach((message) => {
         message.sender.username === "You" ? chatColor = "-sender" : null
         html += `<div class="message${chatColor}">
@@ -154,6 +160,7 @@ function groupSelect(self) {
         html += '</div>'
       })
       document.querySelector('.chat-messages').innerHTML = html
+    }
 
       !response.isMember ? joinGrp.innerHTML = `<button onclick="joinGroup(this)" class="btn btn-success">Join group</button>` : joinGrp.innerHTML = ``
 
@@ -170,6 +177,9 @@ function joinGroup(self) {
   const data = { groupId }
   const show_alert = document.getElementById('show-alert-chats')
   self.remove()
+  if(submitButton.hasAttribute("disabled")){
+    submitButton.removeAttribute("disabled");
+  }
 
   $.ajax({
     url: `${baseURL}/groups/joinGroup`,
@@ -196,7 +206,7 @@ function joinGroup(self) {
       alert("Sorry some error occured please try again later")
     }
   })
-  setTimeout(() => { show_alert.innerHTML = "" }, 4000);
+  setTimeout(() => { show_alert.innerHTML = "" }, 5000);
 }
 
 

@@ -2,28 +2,35 @@
     <%- include('includes/alerts')%>
 
         <link rel="stylesheet" href="/CSS/settings.css">
+
         <body>
             <div class="container dispaly-alert" id="show-alert-chats"></div>
             <main class="d-flex container p-5">
-                <a href ="<%= baseURL%>" class="back-button"><i class="fa-solid fa-arrow-left"></i></a>
+                <a href="<%= baseURL%>" class="back-button"><i class="fa-solid fa-arrow-left"></i></a>
                 <div class="header text-center">
                     <img src="<%= grpFound.profilePhoto%>" alt="">
                     <label>
                         <h3><i class="fa-solid fa-pencil"></i></h3>
-                        <span><%= grpFound.description%></span>
+                        <span>
+                            <%= grpFound.description%>
+                        </span>
                         <input type="file" style="display: none;">
                     </label>
                 </div>
                 <hr>
+                <% var varChecked%>
                 <di class="container middle">
+                    <% grpFound.groupStatus === "Private"? varChecked = "checked": "" %>
+                    <div class="form-check form-switch m-3">
+                        <input class="form-check-input" <%- varChecked %> group-id="<%= grpFound._id%>" onclick="togglePrivateGrp(this)"
+                            type="checkbox" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Private group</label>
+                    </div>
                     <div class="form-check form-switch m-3">
                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Private group</label>
-                      </div>
-                      <div class="form-check form-switch m-3">
-                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Only admins can send message</label>
-                      </div>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Only admins can send
+                            message</label>
+                    </div>
                 </di>
                 <div class="body-content ">
                     <div class="container">
@@ -58,13 +65,31 @@
                 </div>
             </main>
             <input type="hidden" name="group-id" id="group-id" value="<%= grpFound._id%>">
-            <input type="hidden" id="baseURL" value="<%= baseURL%>" >
+            <input type="hidden" id="baseURL" value="<%= baseURL%>">
         </body>
         <script>
             var baseURL = document.getElementById('baseURL').value
-            console.log(baseURL)
+
+            function togglePrivateGrp(self) {
+                var _id = self.getAttribute('group-id')
+                var data = {_id}
+
+                $.ajax({
+                    url: `${baseURL}/groups/togglePrivateGrp`,
+                    method: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success:function(response){
+                        console.log(response)
+                    },
+                    error:function(response){
+
+                    }
+                })
+            }
+
             function removeMember(self) {
-                
+
                 const _id = self.getAttribute('user-id');
                 const groupId = document.querySelector('input[name="group-id"]').value
                 const data = { _id, groupId }
@@ -78,10 +103,10 @@
                         if (response.status === 'success') {
                             var badge, color;
                             document.querySelector(`li[user-id="${_id}"]`).remove()
-                            if(response.status === "success"){
+                            if (response.status === "success") {
                                 badge = "check-circle-fill"
                                 color = "success"
-                            }else{
+                            } else {
                                 badge = "exclamation-triangle-fill"
                                 color = "danger"
                             }
@@ -92,13 +117,15 @@
                                 </div>
                             </div>`
                         }
-                        setTimeout(()=>{
+                        setTimeout(() => {
                             document.querySelector('.dispaly-alert').innerHTML = ""
                         }, 3000)
                     },
                     error: function (response) {
 
                     }
+
                 })
             }
+
         </script>
