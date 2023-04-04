@@ -1,5 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['app', 'deploy', '--rsync', '-q']
+  args: ['app', 'deploy', '--rsync']
   env:
   - 'PROJECT_ID=chat-sphere-381410'

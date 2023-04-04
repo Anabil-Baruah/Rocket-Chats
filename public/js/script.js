@@ -1,5 +1,5 @@
-const baseURL = 'http://localhost:8000'
-// const baseURL = "https://chat-sphere-381410.el.r.appspot.com"
+// const baseURL = 'http://localhost:8000'
+const baseURL = "https://chat-sphere-381410.el.r.appspot.com"
 const socket = io(baseURL)
 const owner = document.querySelector('#ownerId').value
 const chatMessages = document.querySelector('.chat-messages');
